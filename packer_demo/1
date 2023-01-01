@@ -1,0 +1,27 @@
+packer {
+  required_plugins {
+    amazon = {
+      version = ">= 0.0.2"
+      source = "github.com/hashicorp/amazon"
+    }
+  }
+}
+
+source "amazon-ebs" "firstimage" {
+  ami_name      = "my_firstimage"
+  instance_type = "t2.micro"
+  region        = "ap-south-1"
+  source_ami    = "ami-0cca134ec43cf708f"
+  ssh_username  = "ec2-user"
+}
+
+build {
+
+   source = [
+     "source.amazon-ebs.firstimage"
+ ] 
+ provisioner "ansible"{
+   playbook_file = "./ansible_playbook.yml"},
+  {
+}
+}

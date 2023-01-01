@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  vars: 
+    - awsregion: ap-south-1
+    - instanceids: i-045c7bdbd66fd2eea,i-0df1c1ee070c33164
+  tasks: 
+    - name: Create an ec2 instance
+      ec2:
+        key_name:
+        instance_type: t2.micro
+        image: ami-0cca134ec43cf708f
+        wait: yes
+        # group: webserver
+        count: 2
+        vpc_subnet_id: subnet-089f522e3566ebb29
+        assign_public_ip: yes
+        region: "{{ awsregion }}"
+      when: instanceids is undefined    
+
+    - name: Terminate ec2
+      ec2:
+        state: 'absent'
+        instance_ids: "{{ instanceids.split(',') }}"
+        region: ap-south-1    
+      when: instanceids is defined
+
+    - name: print something exciting
+      shell: echo "This is so exciting"
+       
